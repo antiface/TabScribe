@@ -1,0 +1,68 @@
+<html>
+    <head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        // Formats the tab into a line with the address and adds it to the 
+        // container
+        function formatTabToLine(tab, container) {
+            var title = tab.title;
+            var url = tab.url;
+
+            // Ignore pages that match specific schemes or are pinned
+            if (tab.pinned) return;
+            if (url.indexOf("chrome://") == 0) return; 
+
+            container.push(title + " - " + url);
+        }
+
+        $(document).ready(function() {
+            // Grab all the tabs in the current window
+            chrome.windows.getCurrent(function(window) {
+                chrome.tabs.getAllInWindow(window.id, function(tabs) {
+                    // Grab the list of all the addresses
+                    var addrs = [];
+                    for (var i = 0; i < tabs.length; ++i) {
+                        formatTabToLine(tabs[i], addrs);
+                    }
+                    var links = addrs.join("\r\n");
+                    
+                    // Copy the links to the clipboard
+                    $("#clip").text(links).select();
+                    document.execCommand("copy");
+                        setTimeout(function() {
+                            // Remove popup by selecting the tab
+                            chrome.tabs.getSelected(null, function(tab) {
+                                chrome.tabs.update(tab.id, { selected: true } )
+                            });
+                        }, 1500);
+                });            
+            });
+        });
+        </script>
+        <style type="text/css">
+            html, body, div {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                color: #111;
+                font-family: "Myriad Pro", "Segoe UI";
+                font-size: 11pt;
+            }
+            #clip {
+                position: absolute;
+                left: -9999px;
+                top: -9999px;
+            }
+            #status {
+                width: 180px;
+                padding: 0.4em 0 0 0;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <textarea id="clip"></textarea>
+        <div id="status">Tabs copied to clipboard.</div>
+    </body>
+</html>
