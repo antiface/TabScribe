@@ -1,7 +1,7 @@
 {
 	"name": "TabScribe",
 	"version": "0.1",
-	"description": "An open source extension taht copies the addresses of tabs in the current window to the clipboard.",
+	"description": "An open source extension that copies the addresses of tabs in the current window to the clipboard.",
 	"icons": {
 		"16": "icon16.png",
 		"32": "icon32.png",
@@ -14,7 +14,6 @@
 	"offline_enabled": true,
 	"permissions": [
 		"tabs",
-		"clipboardRead",
 		"clipboardWrite"
 	]
 }
